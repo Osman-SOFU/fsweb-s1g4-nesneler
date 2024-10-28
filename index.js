@@ -15,8 +15,12 @@ const serpmeKahvalti = {isim: "Serpme Kahvaltı", fiyat: 16, kategori:"Kahvaltı
 */
 
 
-function MenuElemaniOlustur(/*Kodlar buraya*/){
-	/*Kodlar buraya*/
+function MenuElemaniOlustur(isim, fiyat, kategori){
+	return {
+        isim: isim,
+        fiyat: fiyat,
+        kategori: kategori
+    };
 }
 
 
@@ -30,9 +34,8 @@ function MenuElemaniOlustur(/*Kodlar buraya*/){
 	
 	Örnek: MenuElemaniOlustur("Karışık Pizza",5,"Pizzalar") şunu döndürür: {isim:"Karışık Pizza",fiyat:5,kategori:"Pizzalar"}
 */
-
-
-
+const kola = MenuElemaniOlustur("Kola", 25, "İçecekler");
+console.log(kola);
 /* Görev 2: 
 	Özel bir öğle yemeği yiyorsun! Öğretmen ve öğrencilere %25, diğer kişilere %10 indirim var. Aşağıdaki burger nesnesine, indirimi fiyatı otomatik olarak hesaplayan bir metot ekleyin.
 	
@@ -49,11 +52,15 @@ function MenuElemaniOlustur(/*Kodlar buraya*/){
 const burger = {
 	isim: "Burger", 
 	fiyat: 18, 
-	kategori: "Öğle Yemeği", 
-
+	kategori: "Öğle Yemeği",
+	indirim: function (kullaniciTipi) {
+	if (kullaniciTipi === "öğretmen" || kullaniciTipi === "öğrenci"){
+	return this.fiyat * 0.75;
+	}else {
+	return this.fiyat * 0.9;
+	}
 }
-
-
+}
 
 ///////////////Değerlendirmeler (MVP)///////////////////
 const degerlendirmeler = [
@@ -71,16 +78,20 @@ const degerlendirmeler = [
 	Yukarıdaki degerlendirmeler dizisini(array) kullanarak:
 	1. Sadece Ahmet'in geribildirimini konsolda görüntüleyin - fonksiyona gerek yok
 */
-
-
+const ahmetGeribildirim = degerlendirmeler.find(degerlendirme => degerlendirme.isim === "Ahmet").geribildirim;
+console.log(ahmetGeribildirim);
 
 /*  Görev 4 (ototest yok):  
 	Reyna'nın geribildirimi girilmemiş! Aşağıdakileri uygulayın: (fonksiyona gerek yok) 
 	1. Bu geribildirimi Reyna'nın değerlendirmesine ekleyin - "bu mekan bir harika dostum, yine de garsonun gülümsememesinden puan kırdım"
 	2. degerlendirmeler dizisini konsolda görüntüleyerek çalışmanızı kontrol edin
 */
-
-
+const reynaGeribildirim = degerlendirmeler.find(degerlendirme => degerlendirme.isim === "Reyna").geribildirim;
+degerlendirmeler.forEach(degerlendirme => {
+    if (degerlendirme.isim === "Reyna") {
+        degerlendirme.geribildirim = "Bu mekan bir harika dostum, yine de garsonun gülümsememesinden puan kırdım.";
+    }
+});
 
 /*  Görev 5: 
 	isim, puan, geribildirim'i içeren bir değerlendirme nesnesi oluşturup, yeni değerlendirmeyi mevcut dizinin(array) sonuna ekleyip sonuç dizisini döndüren bir fonksiyon tanımlayın. 
@@ -94,9 +105,12 @@ const degerlendirmeler = [
 */
 
 
-function DegerlendirmeEkle(/*Kodlar buraya */){
-	/*Kodlar buraya */
-	
+function DegerlendirmeEkle(degerlendirmeler, isim, puan, geribildirim){
+	const yeniDegerlendirme = {isim: isim, 
+		puan: puan, 
+		geribildirim: geribildirim};
+	degerlendirmeler.push(yeniDegerlendirme);
+	return degerlendirmeler	
 }
 
 
@@ -112,9 +126,8 @@ function DegerlendirmeEkle(/*Kodlar buraya */){
 */
 
 
-function AnahtardanDegerlendirmeAl(/*Kodlar buraya*/) {
-	/*Kodlar buraya*/
-
+function AnahtardanDegerlendirmeAl(degerlendirmeler , index) {
+return `${degerlendirmeler[index].isim} isimli kişi ${degerlendirmeler[index].puan} puan verdi ve şunları yazdı: ${degerlendirmeler[index].geribildirim}`
 }
 
 
@@ -132,8 +145,9 @@ function AnahtardanDegerlendirmeAl(/*Kodlar buraya*/) {
 */
 
 
-function SonDegerlendirmeyiAl(/*Kodlar buraya*/) {
-	/*Kodlar buraya*/
+function SonDegerlendirmeyiAl(degerlendirmeler) {
+	const sonIndex = degerlendirmeler.length - 1;
+	return `${degerlendirmeler[sonIndex].isim} isimli kişi ${degerlendirmeler[sonIndex].puan} puan verdi ve şunları yazdı: ${degerlendirmeler[sonIndex].geribildirim}`
 } 
 
 
@@ -154,8 +168,14 @@ function SonDegerlendirmeyiAl(/*Kodlar buraya*/) {
 	]
 */
 
-function PuanaGoreDegerlendirmeAl(/* Kodlar buraya */) {
-    /* Kodlar buraya */
+function PuanaGoreDegerlendirmeAl(degerlendirmeler, puan) {
+	const uyan = [];
+	for(let i = 0 ; i < degerlendirmeler.length ; i++){
+		if(degerlendirmeler[i].puan === Math.floor(puan)){
+			uyan.push(degerlendirmeler[i]);
+		}
+	}
+	return uyan;
 }
 
 
@@ -166,8 +186,17 @@ function PuanaGoreDegerlendirmeAl(/* Kodlar buraya */) {
 	
 */
 
-function UzunDegerlendirmeleriAl(/* Kodlar buraya */) {
-    /* Kodlar buraya */
+function UzunDegerlendirmeleriAl(degerlendirmeler) {
+    const uzun = [];
+    for (let i = 0; i < degerlendirmeler.length; i++) {
+        const kelimeler = degerlendirmeler[i].geribildirim.split(' ');
+        for (let j = 0; j < kelimeler.length; j++) {
+            if (kelimeler[j].length > 15) {
+                uzun.push(kelimeler[j]);
+            }
+        }
+    }
+    return uzun;
 }
 
 
@@ -189,9 +218,14 @@ function UzunDegerlendirmeleriAl(/* Kodlar buraya */) {
 */
 
 
-function arabaYapici(/* Kodlar buraya */) {
-    /* Kodlar buraya */
-    
+function arabaYapici(km) {
+    return {
+        kilometreSayaci: km,
+        surus: function(mesafe) {
+            this.kilometreSayaci += mesafe;
+            return this.kilometreSayaci;
+        }
+    };
 }
 
 
